@@ -1,0 +1,7 @@
+"use client";
+
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+
+export default function AdminAnalytics({ data }: { data: { label: string; transactions: number; volume: number }[] }) {
+  return <div className="rounded-2xl border border-slate-800 bg-slate-900 p-5 shadow-xl"><div className="flex items-center justify-between"><div><h2 className="text-sm font-semibold text-white">Transaction operations</h2><p className="mt-1 text-xs text-slate-400">Six-month transaction volume and count.</p></div><span className="text-[10px] uppercase tracking-wider text-slate-500">Live ledger</span></div><div className="mt-5 h-64"><ResponsiveContainer width="100%" height="100%"><BarChart data={data}><CartesianGrid stroke="#1e293b" vertical={false} /><XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 11 }} /><YAxis axisLine={false} tickLine={false} tick={{ fill: "#64748b", fontSize: 11 }} /><Tooltip contentStyle={{ backgroundColor: "#0f172a", borderColor: "#334155", borderRadius: 8, color: "#fff", fontSize: 12 }} /><Bar dataKey="volume" name="Volume" fill="#ef4444" radius={[4, 4, 0, 0]} /><Bar dataKey="transactions" name="Transactions" fill="#818cf8" radius={[4, 4, 0, 0]} /></BarChart></ResponsiveContainer></div></div>;
+}

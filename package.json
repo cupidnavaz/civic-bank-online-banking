@@ -1,0 +1,37 @@
+{
+  "name": "civicbank-internet-banking",
+  "version": "0.1.0-alpha.1",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:seed": "tsx prisma/seed.ts",
+    "admin:create": "tsx scripts/create-admin.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.16.0",
+    "@tailwindcss/postcss": "^4.3.3",
+    "bcrypt": "^6.0.0",
+    "lucide-react": "^0.468.0",
+    "next": "^16.0.0",
+    "next-auth": "^4.24.15",
+    "otpauth": "^9.5.2",
+    "postcss": "^8.5.28",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "recharts": "^3.1.0",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "prisma": "^6.16.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}

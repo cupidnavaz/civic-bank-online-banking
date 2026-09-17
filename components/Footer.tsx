@@ -1,0 +1,1 @@
+export default function Footer(){return <footer className="footer"><div className="container"><strong>CivicBank</strong><p>Digital banking demonstration platform for accounts, transactions, savings, investments and loans.</p><small>Demo environment. Not a licensed bank or brokerage.</small></div></footer>}

@@ -1,0 +1,7 @@
+import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { db } from "@/lib/db";
+
+export async function GET() { const session = await getServerSession(authOptions); if (!session || (session.user as any)?.role !== "ADMIN") return NextResponse.json({ error: "Forbidden" }, { status: 403 }); return NextResponse.json({ announcements: await db.announcement.findMany({ orderBy: { createdAt: "desc" }, take: 50 }) }); }
+export async function POST(request: Request) { const session = await getServerSession(authOptions); if (!session || (session.user as any)?.role !== "ADMIN") return NextResponse.json({ error: "Forbidden" }, { status: 403 }); const { title, body, channel, status } = await request.json(); if (!title || !body) return NextResponse.json({ error: "Title and body are required." }, { status: 400 }); const announcement = await db.announcement.create({ data: { authorId: (session.user as any).id, title, body, channel: channel || "IN_APP", status: status || "DRAFT", publishedAt: status === "PUBLISHED" ? new Date() : null } }); await db.auditLog.create({ data: { userId: (session.user as any).id, action: "CREATE_ANNOUNCEMENT" } }); return NextResponse.json({ announcement }, { status: 201 }); }

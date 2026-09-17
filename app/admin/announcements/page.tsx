@@ -1,0 +1,7 @@
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+import { authOptions } from "@/lib/auth";
+import { db } from "@/lib/db";
+import AdminShell from "@/components/AdminShell";
+import AdminAnnouncementForm from "@/components/AdminAnnouncementForm";
+export default async function AdminAnnouncementsPage() { const session = await getServerSession(authOptions); if (!session || (session.user as any)?.role !== "ADMIN") redirect("/dashboard"); const announcements = await db.announcement.findMany({ orderBy: { createdAt: "desc" }, take: 30 }); return <AdminShell activeRoute="/admin/announcements"><div className="mx-auto max-w-5xl space-y-6 p-5 sm:p-8"><div><p className="text-[10px] uppercase tracking-widest text-red-400">Content operations</p><h1 className="mt-2 text-2xl font-semibold text-white">Announcements</h1></div><AdminAnnouncementForm /><section className="rounded-2xl border border-slate-800 bg-slate-900 shadow-xl"><div className="border-b border-slate-800 p-5"><h2 className="text-sm font-semibold text-white">Recent posts</h2></div>{announcements.map((item) => <div key={item.id} className="flex items-center justify-between border-b border-slate-800 p-5 text-xs"><div><p className="font-semibold text-white">{item.title}</p><p className="mt-1 text-slate-500">{item.channel} · {item.status}</p></div><span className="text-slate-500">{item.createdAt.toLocaleDateString()}</span></div>)}</section></div></AdminShell>; }

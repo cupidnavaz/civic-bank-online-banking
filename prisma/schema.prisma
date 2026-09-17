@@ -1,0 +1,183 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  firstName     String?
+  lastName      String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          String    @default("CUSTOMER")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts      Account[]
+  transactions  Transaction[]
+  virtualCards  VirtualCard[]
+  cardPurchases CardPurchase[]
+  cryptoHoldings CryptoHolding[]
+  beneficiaries Beneficiary[]
+  notifications Notification[]
+  auditLogs     AuditLog[]
+  supportTickets SupportTicket[]
+  announcements Announcement[]
+  newsItems     NewsItem[]
+}
+
+model Account {
+  id            String        @id @default(cuid())
+  userId        String
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accountNumber String        @unique
+  balance       Float         @default(0.0)
+  currency      String        @default("USD")
+  type          String        @default("CHECKING")
+  status        String        @default("ACTIVE")
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  transactions  Transaction[]
+  cryptoHoldings CryptoHolding[]
+}
+
+model Transaction {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accountId     String
+  account       Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  amount        Float
+  type          String   // e.g., TRANSFER, DEPOSIT, WITHDRAWAL
+  status        String   // e.g., PENDING, COMPLETED, FAILED
+  reference     String   @unique
+  description   String?
+  createdAt     DateTime @default(now())
+}
+
+model VirtualCard {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cardNumber    String   @unique
+  cardHolder    String
+  expiryDate    String
+  cvv           String
+  balance       Float    @default(0.0)
+  status        String   @default("ACTIVE")
+  createdAt     DateTime @default(now())
+  purchases     CardPurchase[]
+}
+
+model CardPurchase {
+  id          String      @id @default(cuid())
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cardId      String
+  card        VirtualCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  merchant    String
+  amount      Float
+  currency    String      @default("USD")
+  reference   String      @unique
+  createdAt   DateTime    @default(now())
+}
+
+model CryptoHolding {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accountId     String
+  account       Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  asset         String
+  quantity      Float
+  averagePrice  Float
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Beneficiary {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name          String
+  accountNumber String
+  bankName      String
+  swiftCode     String?
+  createdAt     DateTime @default(now())
+}
+
+model Notification {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title         String
+  message       String
+  isRead        Boolean  @default(false)
+  createdAt     DateTime @default(now())
+}
+
+model AuditLog {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action        String
+  ipAddress     String?
+  createdAt     DateTime @default(now())
+}
+
+model SupportTicket {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category    String
+  priority    String   @default("NORMAL")
+  subject     String
+  message     String
+  status      String   @default("OPEN")
+  adminNote   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Announcement {
+  id          String   @id @default(cuid())
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  title       String
+  body        String
+  channel     String   @default("IN_APP")
+  status      String   @default("DRAFT")
+  publishedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model AdminSetting {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       String
+  updatedAt   DateTime @updatedAt
+}
+
+model NewsItem {
+  id          String   @id @default(cuid())
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  title       String
+  excerpt     String
+  body        String
+  category    String   @default("GENERAL")
+  status      String   @default("DRAFT")
+  publishedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

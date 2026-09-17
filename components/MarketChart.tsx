@@ -1,0 +1,3 @@
+"use client"; import {LineChart,Line,XAxis,YAxis,Tooltip,ResponsiveContainer} from "recharts";
+const data=[{d:"Mon",v:610},{d:"Tue",v:622},{d:"Wed",v:618},{d:"Thu",v:635},{d:"Fri",v:628},{d:"Sat",v:640},{d:"Sun",v:651}];
+export default function MarketChart(){return <div className="chart"><ResponsiveContainer width="100%" height="100%"><LineChart data={data}><XAxis dataKey="d"/><YAxis/><Tooltip/><Line type="monotone" dataKey="v" strokeWidth={3} dot={false}/></LineChart></ResponsiveContainer></div>}

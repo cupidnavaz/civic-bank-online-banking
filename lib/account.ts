@@ -1,0 +1,2 @@
+export function generateAccountNumber(){return `${Date.now().toString().slice(-8)}${Math.floor(1000+Math.random()*9000)}`;}
+export function reference(prefix="TXN"){return `${prefix}-${Date.now()}-${Math.floor(Math.random()*100000)}`;}

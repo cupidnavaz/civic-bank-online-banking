@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/VICTUS/Downloads/civicbank-internet-banking-platform-phase2/civicbank-internet-banking/app/layout.tsx"],"sourcesContent":["import \"./globals.css\"; export const metadata={title:\"CivicBank | Digital Banking\",description:\"Internet banking platform demo\"}; export default function RootLayout({children}:{children:React.ReactNode}){return children}"],"names":["metadata","title","description","RootLayout","children"],"mappings":";;;;;;;AAA+B,MAAMA,WAAS;IAACC,OAAM;IAA8BC,aAAY;AAAgC;AAAkB,SAASC,WAAW,EAACC,QAAQ,EAA4B;IAAE,OAAOA;AAAQ"}}]
+}

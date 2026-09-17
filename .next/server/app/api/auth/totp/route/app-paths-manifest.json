@@ -1,0 +1,3 @@
+{
+  "/api/auth/totp/route": "app/api/auth/totp/route.js"
+}
