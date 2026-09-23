@@ -12,30 +12,23 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error("Missing email or password");
-        }
+        const email = credentials?.email?.trim().toLowerCase();
+        const password = credentials?.password;
 
-        const user = await db.user.findUnique({
-          where: { email: credentials.email },
-        });
+        if (!email || !password) return null;
 
-        if (!user || !user.password) {
-          throw new Error("Invalid email or password");
-        }
+        const user = await db.user.findUnique({ where: { email } });
+        if (!user?.password) return null;
 
-        const isPasswordValid = await bcrypt.compare(
-          credentials.password,
-          user.password
-        );
-
-        if (!isPasswordValid) {
-          throw new Error("Invalid email or password");
-        }
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) return null;
 
         return {
           id: user.id,
-          name: `${user.firstName} ${user.lastName}`,
+          name:
+            user.name ||
+            [user.firstName, user.lastName].filter(Boolean).join(" ") ||
+            user.email,
           email: user.email,
           role: user.role,
         };
@@ -49,14 +42,14 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.role = (user as any).role;
+        token.role = (user as { role?: string }).role;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
-        (session.user as any).id = token.id;
-        (session.user as any).role = token.role;
+        (session.user as { id?: string; role?: string }).id = token.id as string;
+        (session.user as { id?: string; role?: string }).role = token.role as string;
       }
       return session;
     },
